@@ -1,0 +1,25 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kapp.k14s.io/change-rule: "upsert after upserting hackaton.code.vmware.com/rbac"
+  name: demo-deploy
+spec:
+  selector:
+    matchLabels:
+      app: demo-deploy
+  template:
+    metadata:
+      labels:
+        app: demo-deploy
+    spec:
+      serviceAccountName: demo-sa
+      containers:
+      - name: demo-deploy
+        image: demo-app
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: MSG
+          value: #@ data.values.msg
